@@ -1,44 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:velocity_x/velocity_x.dart';
 
-void main() => runApp(
-    GetMaterialApp(
-        home: HomePage()
-    )
-);
+void main() => runApp(GetMaterialApp(home: HomePage()));
 
-class Controller extends GetxController{
-  var count = 0.obs;
-  dynamic increment() => count++;
+class Controller extends GetxController {
+  var ket_qua = 0.obs;
+  dynamic cong_1() => ket_qua++;
+  dynamic tru_1() => ket_qua--;
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends GetView<Controller> {
+
+  Controller controller = Get.put(Controller());
+
+  Widget _buildnumber() => Obx (() => '${controller.ket_qua}'
+      .text
+      .blue600
+      .size(50)
+      .make());
+
+  Widget _buildbuttoncong(BuildContext context) => 'Cộng'
+      .text
+      .white
+      .size(24)
+      .makeCentered()
+      .box
+      .blue600
+      .p4
+      .roundedSM
+      .makeCentered()
+      .h(50)
+      .w60(context)
+      .onTap(() async{
+    controller.cong_1();
+  });
+
+  Widget _buildbuttontru(BuildContext context) => 'Trừ'
+      .text
+      .white
+      .size(24)
+      .makeCentered()
+      .box
+      .blue600
+      .p4
+      .roundedSM
+      .makeCentered()
+      .h(50)
+      .w60(context)
+      .onTap(() async{
+    controller.tru_1();
+  });
+
   @override
-  Widget build(context) {
-    final Controller c = Get.put(Controller());
+  Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Flutter Demo Home Page")),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'You have pushed the button this many times:',
-              ),
-              Obx(() =>
-                  Text(
-                    "${c.count}",
-                    style: Theme.of(context).textTheme.headline4,
-                  )
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton:
-        FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: c.increment
-        )
+        body: [
+          30.heightBox,
+          _buildnumber(),
+          30.heightBox,
+          _buildbuttoncong(context),
+          30.heightBox,
+          _buildbuttontru(context)
+        ].column().centered()
     );
   }
 }
