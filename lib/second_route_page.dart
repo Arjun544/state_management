@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:state_management/home_page.dart';
 
 class SecondRoute extends StatelessWidget {
   @override
@@ -13,7 +12,7 @@ class SecondRoute extends StatelessWidget {
       body: Center(
         child: RaisedButton(
           child: Text('go Back ...'),
-          onPressed: () => Get.to(HomePage()),
+          onPressed: () => Get.back(),
         ),
       ),
     );

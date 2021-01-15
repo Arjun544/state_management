@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:state_management/main.dart';
 import 'package:state_management/second_route_page.dart';
 
 class HomeController extends GetxController {
@@ -28,9 +27,9 @@ class HomeController extends GetxController {
       android: androidPlatformChannelSpecifics,
       iOS: iOSChannelSpecifics
     );
-    DateTime time=DateTime.now().add(Duration(seconds: 0));
-    await flutterLocalNotificationsPlugin.schedule(0, 'Hello, buddy',
-        'A message from flutter buddy',time, platformChannelSpecifics,
+
+    await flutterLocalNotificationsPlugin.show(0, 'Hello, buddy',
+        'A message from flutter buddy', platformChannelSpecifics,
         payload: 'test oayload');
   }
 
@@ -52,30 +51,30 @@ class HomeController extends GetxController {
 
   Future onSelectNotification(String payload) async {
     if (payload != null) {
-      print('Notification payload: $payload');
+      debugPrint('Notification payload: $payload');
     }
    Get.to(SecondRoute());
   }
 
   Future onDidReceiveLocalNotification(
       int id, String title, String body, String payload) async {
-    // await showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) => CupertinoAlertDialog(
-    //       title: Text(title),
-    //       content: Text(body),
-    //       actions: <Widget>[
-    //         CupertinoDialogAction(
-    //           isDefaultAction: true,
-    //           child: Text('Ok'),
-    //           onPressed: () async {
-    //             Navigator.of(context, rootNavigator: true).pop();
-    //             await Navigator.push(context,
-    //                 MaterialPageRoute(builder: (context) => SecondRoute()));
-    //           },
-    //         )
-    //       ],
-    //     ));
+    await showDialog(
+        context: null,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(body),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: Text('Ok'),
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                await Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SecondRoute()));
+              },
+            )
+          ],
+        ));
   }
 
 }
