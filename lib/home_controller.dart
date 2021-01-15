@@ -9,43 +9,73 @@ class HomeController extends GetxController {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   new FlutterLocalNotificationsPlugin();
   var initializationSettingsAndroid;
+  var initializationSettingsIOS;
   var initializationSettings;
 
-  void initState() {
-    initializationSettingsAndroid =
-    new AndroidInitializationSettings('@mipmap/ic_launcher');
-    initializationSettings = new InitializationSettings(
-        android: initializationSettingsAndroid
-    );
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
-  }
-
   void showNotification() async {
-    await _demoNotification();
+    await demoNotification();
   }
 
-  Future<void> _demoNotification() async {
+  Future<void> demoNotification() async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'channel_ID', 'channel name', 'channel description',
         importance: Importance.max,
         priority: Priority.high,
         ticker: 'test ticker');
 
+    var iOSChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSChannelSpecifics
     );
+    DateTime time=DateTime.now().add(Duration(seconds: 0));
+    await flutterLocalNotificationsPlugin.schedule(0, 'Hello, buddy',
+        'A message from flutter buddy',time, platformChannelSpecifics,
+        payload: 'test oayload');
+  }
 
-    await flutterLocalNotificationsPlugin.show(0, 'Show Local Notification',
-        'test', platformChannelSpecifics,
-        payload: 'test payload');
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    initializationSettingsAndroid =
+    new AndroidInitializationSettings('@mipmap/ic_launcher');
+    initializationSettingsIOS = new IOSInitializationSettings(
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    initializationSettings = new InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS
+    );
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
   }
 
   Future onSelectNotification(String payload) async {
     if (payload != null) {
-      debugPrint('Notification payload: $payload');
+      print('Notification payload: $payload');
     }
-    return Get.to(SecondRoute());
+   Get.to(SecondRoute());
+  }
+
+  Future onDidReceiveLocalNotification(
+      int id, String title, String body, String payload) async {
+    // await showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) => CupertinoAlertDialog(
+    //       title: Text(title),
+    //       content: Text(body),
+    //       actions: <Widget>[
+    //         CupertinoDialogAction(
+    //           isDefaultAction: true,
+    //           child: Text('Ok'),
+    //           onPressed: () async {
+    //             Navigator.of(context, rootNavigator: true).pop();
+    //             await Navigator.push(context,
+    //                 MaterialPageRoute(builder: (context) => SecondRoute()));
+    //           },
+    //         )
+    //       ],
+    //     ));
   }
 
 }
