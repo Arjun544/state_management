@@ -2,16 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:get/get.dart';
+import 'package:state_management/home_controller.dart';
+import 'package:state_management/home_page.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  tz.initializeTimeZones();
-  final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
-  tz.setLocalLocation(tz.getLocation(timeZoneName));
-  runApp(MyApp());
+  final HomeController homeController = Get.put(HomeController());
+  await homeController.configureLocalTimeZone();
+  runApp(
+      GetMaterialApp(
+          home: HomePage()
+      )
+  );
 }
+
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   tz.initializeTimeZones();
+//   final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+//   tz.setLocalLocation(tz.getLocation(timeZoneName));
+//   runApp(MyApp());
+// }
+//
+// Future<void> configureLocalTimeZone() async {
+//   tz.initializeTimeZones();
+//   final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+//   tz.setLocalLocation(tz.getLocation(timeZoneName));
+// }
 
 class MyApp extends StatelessWidget {
   @override
@@ -23,12 +43,12 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.red,
         primaryColor: Colors.red,
       ),
-      home: HomePage(),
+      home: MyHomePage(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }

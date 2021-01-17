@@ -1,80 +1,79 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:get/get.dart';
 import 'package:state_management/second_route_page.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class HomeController extends GetxController {
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  new FlutterLocalNotificationsPlugin();
-  var initializationSettingsAndroid;
-  var initializationSettingsIOS;
-  var initializationSettings;
+  FlutterLocalNotificationsPlugin fltrNotification;
+  String selectedParam;
+  String task;
+  int val;
 
-  void showNotification() async {
-    await demoNotification();
-  }
-
-  Future<void> demoNotification() async {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'channel_ID', 'channel name', 'channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'test ticker');
-
-    var iOSChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSChannelSpecifics
-    );
-
-    await flutterLocalNotificationsPlugin.show(0, 'Hello, buddy',
-        'A message from flutter buddy', platformChannelSpecifics,
-        payload: 'test oayload');
+  Future<void> configureLocalTimeZone() async {
+    tz.initializeTimeZones();
+    final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZoneName));
   }
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    initializationSettingsAndroid =
-    new AndroidInitializationSettings('@mipmap/ic_launcher');
-    initializationSettingsIOS = new IOSInitializationSettings(
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    initializationSettings = new InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: initializationSettingsIOS
+    var androidInitilize = new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iOSinitilize = new IOSInitializationSettings();
+    var initilizationsSettings =
+    new InitializationSettings(
+        android: androidInitilize,
+        iOS: iOSinitilize
     );
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
+    fltrNotification = new FlutterLocalNotificationsPlugin();
+    fltrNotification.initialize(initilizationsSettings,
+        onSelectNotification: notificationSelected);
   }
 
-  Future onSelectNotification(String payload) async {
-    if (payload != null) {
-      debugPrint('Notification payload: $payload');
+  Future showNotification() async {
+    var androidDetails = new AndroidNotificationDetails(
+        "Channel ID", "Desi programmer", "This is my channel",
+        importance: Importance.max,
+        priority: Priority.max
+    );
+    var iOSDetails = new IOSNotificationDetails();
+    var generalNotificationDetails =
+    new NotificationDetails(
+        android: androidDetails,
+        iOS: iOSDetails
+    );
+
+    var scheduledTime;
+    if (selectedParam == "Hours") {
+      scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(hours: val));
+    } else if (selectedParam == "Minutes") {
+      scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(minutes: val));
+    } else {
+      scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(seconds: val));
     }
-   Get.to(SecondRoute());
+
+    await fltrNotification.zonedSchedule(
+        0,
+        'scheduled title',
+        task,
+        scheduledTime,
+        generalNotificationDetails,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.wallClockTime);
   }
 
-  Future onDidReceiveLocalNotification(
-      int id, String title, String body, String payload) async {
-    await showDialog(
-        context: null,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text(title),
-          content: Text(body),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              child: Text('Ok'),
-              onPressed: () async {
-                Navigator.of(context, rootNavigator: true).pop();
-                await Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SecondRoute()));
-              },
-            )
-          ],
-        ));
+  Future notificationSelected(String payload) async {
+    showDialog(
+      context: null,
+      builder: (context) => AlertDialog(
+        content: Text("Notification Clicked $payload"),
+      ),
+    );
   }
-
 }
