@@ -8,9 +8,9 @@ import 'package:timezone/timezone.dart' as tz;
 
 class HomeController extends GetxController {
   FlutterLocalNotificationsPlugin fltrNotification;
-  String selectedParam = 'Seconds';
+  RxString selectedParam = 'Seconds'.obs;
   String task;
-  int val = 11;
+  RxInt val = 11.obs;
 
   Future<void> configureLocalTimeZone() async {
     tz.initializeTimeZones();
@@ -43,11 +43,14 @@ class HomeController extends GetxController {
 
     var scheduledTime;
     if (selectedParam == "Hours") {
-      scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(hours: val));
+      scheduledTime =
+          tz.TZDateTime.now(tz.local).add(Duration(hours: val.value));
     } else if (selectedParam == "Minutes") {
-      scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(minutes: val));
+      scheduledTime =
+          tz.TZDateTime.now(tz.local).add(Duration(minutes: val.value));
     } else {
-      scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(seconds: val));
+      scheduledTime =
+          tz.TZDateTime.now(tz.local).add(Duration(seconds: val.value));
     }
 
     await fltrNotification.zonedSchedule(

@@ -23,95 +23,88 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GetBuilder<HomeController>(
-        init: HomeController(),
-        builder: (controller) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextField(
-                    decoration: InputDecoration(border: OutlineInputBorder()),
-                    onChanged: (task) {
-                      homeController.task = task;
+      body: Center(
+        child: Obx(
+          () => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: TextField(
+                  decoration: InputDecoration(border: OutlineInputBorder()),
+                  onChanged: (task) {
+                    homeController.task = task;
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  DropdownButton(
+                    value: homeController.selectedParam.value,
+                    items: [
+                      DropdownMenuItem(
+                        child: Text("Seconds"),
+                        value: "Seconds",
+                      ),
+                      DropdownMenuItem(
+                        child: Text("Minutes"),
+                        value: "Minutes",
+                      ),
+                      DropdownMenuItem(
+                        child: Text("Hours"),
+                        value: "Hours",
+                      ),
+                    ],
+                    hint: Text(
+                      "Select Your Field.",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    onChanged: (selectedParam) {
+                      homeController.selectedParam.value = selectedParam;
                     },
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    DropdownButton(
-                      value: controller.selectedParam,
-                      items: [
-                        DropdownMenuItem(
-                          child: Text("Seconds"),
-                          value: "Seconds",
-                        ),
-                        DropdownMenuItem(
-                          child: Text("Minutes"),
-                          value: "Minutes",
-                        ),
-                        DropdownMenuItem(
-                          child: Text("Hours"),
-                          value: "Hours",
-                        ),
-                      ],
-                      hint: Text(
-                        "Select Your Field.",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
+                  DropdownButton(
+                    value: homeController.val.value,
+                    items: [
+                      DropdownMenuItem(
+                        child: Text("1"),
+                        value: 11,
                       ),
-                      onChanged: (selectedParam) {
-                        controller.selectedParam = selectedParam;
-                        setState(() {});
-                      },
-                    ),
-                    DropdownButton(
-                      value: controller.val,
-                      items: [
-                        DropdownMenuItem(
-                          child: Text("1"),
-                          value: 11,
-                        ),
-                        DropdownMenuItem(
-                          child: Text("2"),
-                          value: 22,
-                        ),
-                        DropdownMenuItem(
-                          child: Text("3"),
-                          value: 33,
-                        ),
-                        DropdownMenuItem(
-                          child: Text("4"),
-                          value: 44,
-                        ),
-                      ],
-                      hint: Text(
-                        "Select Value",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
+                      DropdownMenuItem(
+                        child: Text("2"),
+                        value: 22,
                       ),
-                      onChanged: (val) {
-                        controller.val = val;
-                        setState(() {
-                          
-                        });
-                      },
+                      DropdownMenuItem(
+                        child: Text("3"),
+                        value: 33,
+                      ),
+                      DropdownMenuItem(
+                        child: Text("4"),
+                        value: 44,
+                      ),
+                    ],
+                    hint: Text(
+                      "Select Value",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
-                  ],
-                ),
-                RaisedButton(
-                  onPressed: controller.showNotification,
-                  child: new Text('Set Task With Notification'),
-                )
-              ],
-            ),
-          );
-        },
+                    onChanged: (val) {
+                      homeController.val.value = val;
+                    },
+                  ),
+                ],
+              ),
+              RaisedButton(
+                onPressed: homeController.showNotification,
+                child: new Text('Set Task With Notification'),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
