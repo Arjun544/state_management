@@ -35,7 +35,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State {
   FlutterLocalNotificationsPlugin fltrNotification;
-  String _selectedParam;
+  String selectedParam;
   String task;
   int val;
 
@@ -68,9 +68,9 @@ class _HomePageState extends State {
     );
 
     var scheduledTime;
-    if (_selectedParam == "Hour") {
+    if (selectedParam == "Hours") {
       scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(hours: val));
-    } else if (_selectedParam == "Minute") {
+    } else if (selectedParam == "Minutes") {
       scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(minutes: val));
     } else {
       scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(seconds: val));
@@ -98,8 +98,8 @@ class _HomePageState extends State {
               padding: const EdgeInsets.all(15.0),
               child: TextField(
                 decoration: InputDecoration(border: OutlineInputBorder()),
-                onChanged: (_val) {
-                  task = _val;
+                onChanged: (_task) {
+                  task = _task;
                 },
               ),
             ),
@@ -107,7 +107,7 @@ class _HomePageState extends State {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 DropdownButton(
-                  value: _selectedParam,
+                  value: selectedParam,
                   items: [
                     DropdownMenuItem(
                       child: Text("Seconds"),
@@ -118,8 +118,8 @@ class _HomePageState extends State {
                       value: "Minutes",
                     ),
                     DropdownMenuItem(
-                      child: Text("Hour"),
-                      value: "Hour",
+                      child: Text("Hours"),
+                      value: "Hours",
                     ),
                   ],
                   hint: Text(
@@ -128,9 +128,9 @@ class _HomePageState extends State {
                       color: Colors.black,
                     ),
                   ),
-                  onChanged: (_val) {
+                  onChanged: (_selectedParam) {
                     setState(() {
-                      _selectedParam = _val;
+                      selectedParam = _selectedParam;
                     });
                   },
                 ),
@@ -139,19 +139,19 @@ class _HomePageState extends State {
                   items: [
                     DropdownMenuItem(
                       child: Text("1"),
-                      value: 1,
+                      value: 11,
                     ),
                     DropdownMenuItem(
                       child: Text("2"),
-                      value: 2,
+                      value: 22,
                     ),
                     DropdownMenuItem(
                       child: Text("3"),
-                      value: 3,
+                      value: 33,
                     ),
                     DropdownMenuItem(
                       child: Text("4"),
-                      value: 4,
+                      value: 44,
                     ),
                   ],
                   hint: Text(
