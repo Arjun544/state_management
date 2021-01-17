@@ -8,27 +8,26 @@ import 'package:timezone/timezone.dart' as tz;
 
 class HomeController extends GetxController {
   FlutterLocalNotificationsPlugin fltrNotification;
-  String selectedParam;
+  String selectedParam = 'Seconds';
   String task;
-  int val;
+  int val = 11;
 
   Future<void> configureLocalTimeZone() async {
     tz.initializeTimeZones();
     final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
     tz.setLocalLocation(tz.getLocation(timeZoneName));
+    update();
   }
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    var androidInitilize = new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var androidInitilize =
+        new AndroidInitializationSettings('@mipmap/ic_launcher');
     var iOSinitilize = new IOSInitializationSettings();
-    var initilizationsSettings =
-    new InitializationSettings(
-        android: androidInitilize,
-        iOS: iOSinitilize
-    );
+    var initilizationsSettings = new InitializationSettings(
+        android: androidInitilize, iOS: iOSinitilize);
     fltrNotification = new FlutterLocalNotificationsPlugin();
     fltrNotification.initialize(initilizationsSettings,
         onSelectNotification: notificationSelected);
@@ -37,15 +36,10 @@ class HomeController extends GetxController {
   Future showNotification() async {
     var androidDetails = new AndroidNotificationDetails(
         "Channel ID", "Desi programmer", "This is my channel",
-        importance: Importance.max,
-        priority: Priority.max
-    );
+        importance: Importance.max, priority: Priority.max);
     var iOSDetails = new IOSNotificationDetails();
     var generalNotificationDetails =
-    new NotificationDetails(
-        android: androidDetails,
-        iOS: iOSDetails
-    );
+        new NotificationDetails(android: androidDetails, iOS: iOSDetails);
 
     var scheduledTime;
     if (selectedParam == "Hours") {
@@ -57,14 +51,10 @@ class HomeController extends GetxController {
     }
 
     await fltrNotification.zonedSchedule(
-        0,
-        'scheduled title',
-        task,
-        scheduledTime,
-        generalNotificationDetails,
+        0, 'scheduled title', task, scheduledTime, generalNotificationDetails,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.wallClockTime);
+            UILocalNotificationDateInterpretation.wallClockTime);
   }
 
   Future notificationSelected(String payload) async {

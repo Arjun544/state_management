@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:state_management/home_controller.dart';
-import 'package:state_management/home_page.dart';
 
-Future<void> main() async {
+import 'home_page.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final HomeController homeController = Get.put(HomeController());
-  await homeController.configureLocalTimeZone();
   runApp(
-      GetMaterialApp(
-          home: HomePage()
-      )
+    MyApp(),
   );
 }
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      home: HomePage(),
+    );
+  }
+}
+
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await homeController.configureLocalTimeZone();
+//   runApp(
+//     GetMaterialApp(
+//       home: HomePage(),
+//     ),
+//   );
+// }
